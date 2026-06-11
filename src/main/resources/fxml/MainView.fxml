@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.vips.pharma.controller.MainController"
+            stylesheets="@../css/style.css">
+
+    <!-- ── LEFT SIDEBAR ── -->
+    <left>
+        <VBox styleClass="sidebar" spacing="4" prefWidth="215">
+            <padding><Insets top="20" left="12" right="12" bottom="20"/></padding>
+
+            <!-- Logo — fx:id lets controller swap emoji for ImageView -->
+            <VBox fx:id="sidebarLogoBox" alignment="CENTER" spacing="2" styleClass="sidebar-logo-box">
+                <padding><Insets bottom="10"/></padding>
+                <Label fx:id="lblSidebarLogoEmoji" text="💊" styleClass="sidebar-logo-emoji"/>
+                <Label text="VI-PS PHARMA" styleClass="sidebar-title"/>
+                <Label text="POS &amp; Inventory" styleClass="sidebar-subtitle"/>
+            </VBox>
+
+            <Separator styleClass="sidebar-sep"/>
+
+            <Button text="🛒  Point of Sale"   fx:id="btnPOS"       onAction="#showPOS"       styleClass="nav-btn" maxWidth="Infinity"/>
+            <Button text="📦  Inventory"        fx:id="btnInventory" onAction="#showInventory"  styleClass="nav-btn" maxWidth="Infinity"/>
+            <Button text="🧾  Sales History"    fx:id="btnReceipts"  onAction="#showReceipts"   styleClass="nav-btn" maxWidth="Infinity"/>
+            <Button text="📋  Audit Logs"       fx:id="btnAudit"     onAction="#showAudit"      styleClass="nav-btn" maxWidth="Infinity"/>
+            <Button text="👥  User Management"  fx:id="btnUsers"     onAction="#showUsers"      styleClass="nav-btn" maxWidth="Infinity"/>
+
+            <Pane VBox.vgrow="ALWAYS"/>
+
+            <Label fx:id="lblUserInfo" text="👤" styleClass="user-info-label" wrapText="true"/>
+            <Separator styleClass="sidebar-sep"/>
+            <Button text="🚪  Logout" fx:id="btnLogout" onAction="#handleLogout"
+                    styleClass="btn-logout" maxWidth="Infinity"/>
+            <Label fx:id="lblStatus" text="✔ Ready" styleClass="status-label" wrapText="true"/>
+        </VBox>
+    </left>
+
+    <!-- ── CONTENT AREA ── -->
+    <center>
+        <StackPane fx:id="contentArea" styleClass="content-area"/>
+    </center>
+</BorderPane>

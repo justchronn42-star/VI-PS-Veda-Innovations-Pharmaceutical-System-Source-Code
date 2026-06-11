@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<data>
+  <receipt>
+    <receiptId>5</receiptId>
+    <dateTime>2026-06-10 11:12:04</dateTime>
+    <processedBy>SYSTEM</processedBy>
+    <grandTotal>12.00</grandTotal>
+    <items>
+      <item>
+        <medName>ANDY'S MEDS</medName>
+        <quantity>1</quantity>
+        <unitPriceFormatted>PHP 12.00</unitPriceFormatted>
+        <totalFormatted>PHP 12.00</totalFormatted>
+      </item>
+    </items>
+  </receipt>
+</data>

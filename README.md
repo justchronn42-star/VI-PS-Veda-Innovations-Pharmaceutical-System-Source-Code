@@ -1,6 +1,6 @@
-# VIPS Pharma — POS & Inventory Management System
+# VI-PS Pharma — POS & Inventory Management System
 
-A desktop Point-of-Sale and pharmaceutical inventory management system built with **JavaFX**, **SQLite**, and **JasperReports**. Includes role-based access control, audit logging, and PDF receipt/report generation through an XML-driven Jasper pipeline.
+A desktop Point-of-Sale and pharmaceutical inventory management system built with **JavaFX**, **SQLite**, and **JasperReports**. Includes role-based access control, audit logging, custom branding, and PDF receipt/report generation through an XML-driven Jasper pipeline.
 
 ---
 
@@ -12,8 +12,8 @@ A desktop Point-of-Sale and pharmaceutical inventory management system built wit
 - **Audit Logs** — every create/update/delete action is logged with the acting user and timestamp
 - **User Management** — admin-only screen to create, edit, deactivate, and delete user accounts
 - **Role-Based Access Control** — `ADMIN`, `PHARMACIST`, `CASHIER` roles gate navigation and actions
-- **Custom Branding** — drop in your own `logo.png` to replace the default pill emoji on the login screen and sidebar
-- **PDF Reports** — receipts and stock reports generated via JasperReports `.jrxml` templates fed by XML data files
+- **Custom Branding** — drop in `logo.png` and `login_bg.png` to replace the default pill emoji and login background with your own pharmacy's branding
+- **PDF Reports** — receipts and stock reports generated via JasperReports `.jrxml` templates fed by XML data files, with Unicode font support (₱ symbol renders correctly)
 
 ---
 
@@ -49,9 +49,9 @@ DB (SQLite) → DAO → Java Model → XML Data Writer → .jrxml Template → J
 ## 🧰 Tech Stack
 
 - **Java 17**
-- **JavaFX 21.0.2** (Controls + FXML)
+- **JavaFX 21.0.2** (Controls + FXML), pulled via Maven for development
 - **SQLite** via `sqlite-jdbc 3.45.1.0`
-- **JasperReports 6.21.0** + iText 2.1.7 (PDF export)
+- **JasperReports 6.21.0** + `jasperreports-fonts` (Unicode/₱ symbol support) + iText 2.1.7 (PDF export)
 - **Jaxen 2.0.0** (XPath engine for `JRXmlDataSource`)
 - **Maven** build
 
@@ -59,19 +59,20 @@ DB (SQLite) → DAO → Java Model → XML Data Writer → .jrxml Template → J
 
 ## 📋 Prerequisites
 
+- **Eclipse IDE for Java Developers** (or Eclipse IDE for Enterprise Java/Web Developers, which includes m2e by default)
 - **JDK 17** or later — [Adoptium Temurin](https://adoptium.net/) recommended
-- **Apache Maven 3.8+**
-- No separate JavaFX SDK install needed — Maven pulls the required JARs
+- **e(fx)clipse** plugin (installed via Eclipse Marketplace — see [Eclipse Setup](#-eclipse-setup))
 
-Verify your setup:
+Verify your Java version:
 ```bash
 java -version
-mvn -version
 ```
 
 ---
 
-## 🚀 Building & Running from Source
+## 🚀 Getting Started
+
+This project is set up to run via **Eclipse** (see [Eclipse Setup](#-eclipse-setup) below). It includes `.project` and `.classpath` files preconfigured for Maven (m2e) and JavaFX (e(fx)clipse).
 
 ### 1. Clone the repository
 ```bash
@@ -79,40 +80,49 @@ git clone https://github.com/<your-username>/vips-pharma.git
 cd vips-pharma
 ```
 
-### 2. Build the project
-```bash
-mvn clean package
-```
+Then follow the Eclipse setup instructions below to import, configure, and run the project.
 
-This compiles the code, copies all runtime dependencies (including JavaFX platform JARs) into `target/lib/`, and produces a thin application JAR at `target/vips-pharma.jar`.
+---
 
-### 3. Run the application
+## 🧩 Eclipse Setup
 
-**Windows:**
-```cmd
-run.bat
-```
+This project includes Eclipse project files (`.project`, `.classpath`) preconfigured for **Java 17**, **Maven (m2e)**, and **JavaFX (e(fx)clipse)**.
 
-**Linux / macOS:**
-```bash
-chmod +x run.sh
-./run.sh
-```
+### 1. Install required plugins
 
-> **Why a run script and not `java -jar`?**
-> JavaFX ships its native libraries as separate platform-specific JARs. The run scripts pass `--module-path target/lib --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.base` so the JVM can locate them. Running `java -jar target/vips-pharma.jar` directly will fail with *"JavaFX runtime components are missing"*.
+From **Help → Eclipse Marketplace**, install:
 
-### Alternative: run during development
-```bash
-mvn javafx:run
-```
-This uses the `javafx-maven-plugin`, which configures the module path automatically — no build artifact needed.
+- **m2e** — Maven integration (bundled with most Eclipse distributions by default)
+- **e(fx)clipse** — search for "efxclipse" and install the JavaFX tooling
+
+> e(fx)clipse provides the `JAVAFX_CONTAINER` classpath entry this project depends on. Without it, you'll see "Unbound classpath container" errors on the JavaFX libraries.
+
+### 2. Import the project
+
+1. **File → Import → Existing Maven Projects**
+2. Browse to the cloned repository root (where `pom.xml` lives)
+3. Select the project and click **Finish**
+
+Eclipse will read `.project` and `.classpath`, apply the m2e Maven nature, and resolve dependencies via `pom.xml`.
+
+### 3. Set the JRE
+
+Ensure a **JavaSE-17** JRE is configured:
+
+- **Window → Preferences → Java → Installed JREs** — add a JDK 17+ if none is listed
+- Right-click the project → **Build Path → Configure Build Path → Libraries** — confirm the JRE System Library shows `JavaSE-17`
+
+### 4. Run the application
+
+Right-click `MainApp.java` → **Run As → Java Application**.
+
+If you get *"Error: JavaFX runtime components are missing"* when running this way, e(fx)clipse isn't installed or the `JAVAFX_CONTAINER` isn't resolving — reinstall the e(fx)clipse plugin and clean/rebuild the project (**Project → Clean...**).
 
 ---
 
 ## 🔑 Default Login
 
-On first launch, the database (`vips_pharma.db`) is created automatically and seeded with a default administrator account:
+On first launch, the database (`vips_pharma.db`) is created automatically in the working directory and seeded with a default administrator account:
 
 | Username | Password | Role |
 |---|---|---|
@@ -124,12 +134,16 @@ On first launch, the database (`vips_pharma.db`) is created automatically and se
 
 ## 🎨 Custom Branding
 
-To replace the default 💊 pill emoji logo with your own image:
+The app looks for branding assets in the working directory (next to the JAR / executable) at startup:
 
-1. Place a file named `logo.png` (or `.jpg`, `.jpeg`, `.gif`) in the same directory as `run.bat` / `run.sh`
-2. Restart the application
+| File | Purpose | Where it appears |
+|---|---|---|
+| `logo.png` (or `.jpg`/`.jpeg`/`.gif`) | Replaces the 💊 pill emoji | Login screen header, sidebar, and window/taskbar icon |
+| `login_bg.png` (or `.jpg`/`.jpeg`) | Background image for the login screen's right-hand panel | Login screen only |
 
-The image will appear in both the login screen header and the sidebar, automatically scaled and styled to match.
+If these files are absent, the app falls back to the default pill emoji and a CSS gradient background — nothing breaks.
+
+`login_bg.png` is also checked in `~/.vips_pharma/` and `<working dir>/images/`, in that order, before falling back to the bundled classpath default.
 
 ---
 
@@ -161,6 +175,8 @@ Reports are **not** built programmatically — they follow a strict data → XML
 | Receipt Reprint | `receipt_reprint.jrxml` | `writeReceiptReprintXml()` |
 | Stock Report | `stock_report.jrxml` | `writeStockXml()` |
 
+The `jasperreports-fonts` dependency bundles DejaVu Sans/Serif, which include Unicode glyphs needed to render the ₱ (Philippine peso) symbol correctly in generated PDFs.
+
 ---
 
 ## 📂 Project Structure
@@ -168,8 +184,9 @@ Reports are **not** built programmatically — they follow a strict data → XML
 ```
 vips-pharma/
 ├── pom.xml
-├── run.bat
-├── run.sh
+├── .project / .classpath        (Eclipse + m2e + e(fx)clipse config)
+├── logo.png                      (optional — your branding)
+├── login_bg.png                  (optional — your branding)
 └── src/main/
     ├── java/com/vips/pharma/
     │   ├── MainApp.java
@@ -186,3 +203,19 @@ vips-pharma/
 ```
 
 ---
+
+## 📦 Building the Portable Distribution
+
+The portable/end-user distribution (see its own README) does **not** rely on Eclipse or a live Maven setup. Instead it bundles:
+
+- **`vips-pharma-fat.jar`** — a shaded fat JAR containing all dependencies except JavaFX
+- **`javafx-sdk-26.0.1/`** — a full local JavaFX SDK (downloaded separately from [openjfx.io](https://gluonhq.com/products/javafx/)), providing native libraries for `--module-path`
+- **`VI-PS.exe`** — a native Windows launcher wrapping the same launch logic as `run.bat` (built with a tool such as Launch4j or jpackage)
+- **`run.bat`** — launches via:
+  ```bat
+  java --module-path javafx-sdk-26.0.1\lib ^
+       --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.base ^
+       -jar target\vips-pharma-fat.jar
+  ```
+
+To produce the fat JAR from Eclipse, run a **Maven Build...** with goal `package shade:shade` (requires the `maven-shade-plugin` in `pom.xml`), then copy the resulting fat JAR into a folder alongside a downloaded JavaFX SDK matching your target Java version.

@@ -186,16 +186,3 @@ vips-pharma/
 ```
 
 ---
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/my-feature`)
-3. Commit your changes
-4. Open a pull request
-
----
-
-## 📄 License
-
-This project is provided as-is for educational and internal business use. Add your preferred license here (e.g. MIT, Apache 2.0).

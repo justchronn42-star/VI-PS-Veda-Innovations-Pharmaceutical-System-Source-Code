@@ -60,7 +60,7 @@ DB (SQLite) → DAO → Java Model → XML Data Writer → .jrxml Template → J
 ## 📋 Prerequisites
 
 - **Eclipse IDE for Java Developers** (or Eclipse IDE for Enterprise Java/Web Developers, which includes m2e by default)
-- **JDK 17** or later — [Adoptium Temurin](https://adoptium.net/) recommended
+- **JDK 17** or later — [Java Oracle](https://www.oracle.com/asean/java/) recommended
 - **e(fx)clipse** plugin (installed via Eclipse Marketplace — see [Eclipse Setup](#-eclipse-setup))
 
 Verify your Java version:
